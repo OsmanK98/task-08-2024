@@ -1,0 +1,10 @@
+bank-account:
+    resource:
+        path: ../src/BankAccount/Infrastructure/Rest/Controller/
+        namespace: App\BankAccount\Infrastructure\Rest\Controller
+    type: attribute
+
+app.swagger_ui:
+    path: /api/doc
+    methods: GET
+    defaults: { _controller: nelmio_api_doc.controller.swagger_ui }

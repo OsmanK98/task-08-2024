@@ -1,0 +1,15 @@
+framework:
+    messenger:
+        default_bus: command.sync.bus
+        buses:
+            command.sync.bus:
+                middleware:
+                    - doctrine_close_connection
+                    - doctrine_transaction
+        serializer:
+            default_serializer: messenger.transport.symfony_serializer
+        transports:
+            sync:
+                dsn: 'sync://'
+        routing:
+            App\Shared\Domain\Bus\Command\CommandInterface: sync
