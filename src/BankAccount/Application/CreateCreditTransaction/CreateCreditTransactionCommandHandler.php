@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\BankAccount\Application\CreateCreditTransaction;
 
 use App\BankAccount\Domain\Repository\BankAccountRepositoryInterface;
+use App\BankAccount\Domain\ValueObject\AccountNumber;
 use App\BankAccount\Domain\ValueObject\Currency;
 use App\BankAccount\Domain\ValueObject\Money;
 use App\Shared\Application\IdGeneratorInterface;
@@ -20,8 +21,13 @@ class CreateCreditTransactionCommandHandler implements CommandHandlerInterface
 
     public function __invoke(CreateCreditTransactionCommand $command): void
     {
-        $senderAccount = $this->bankAccountRepository->getAccountByAccountNumber($command->senderAccountNumber);
-        $receiverAccount = $this->bankAccountRepository->getAccountByAccountNumber($command->receiverAccountNumber);
+        $senderAccountNumber = new AccountNumber($command->senderAccountNumber);
+        $senderAccount = $this->bankAccountRepository->getAccountByAccountNumber(
+            $senderAccountNumber
+        );
+        $receiverAccount = $this->bankAccountRepository->getAccountByAccountNumber(
+            new AccountNumber($command->receiverAccountNumber)
+        );
         if (null === $receiverAccount) {
             throw new \InvalidArgumentException('Receiver account not found');
         }
@@ -31,7 +37,7 @@ class CreateCreditTransactionCommandHandler implements CommandHandlerInterface
             new Money($command->amount),
             new Currency($command->currency),
             $senderAccount, // Can be null if sender account is in different bank
-            $command->senderAccountNumber,
+            $senderAccountNumber,
             $command->transactionDate,
         );
 

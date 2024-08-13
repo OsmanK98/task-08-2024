@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\BankAccount\Domain\Model;
 
+use App\BankAccount\Domain\ValueObject\AccountNumber;
 use App\BankAccount\Domain\ValueObject\Currency;
 use App\BankAccount\Domain\ValueObject\Money;
 use App\BankAccount\Domain\ValueObject\TransactionType;
@@ -17,8 +18,8 @@ class Transaction
         private readonly Id $id,
         private readonly ?Id $senderAccountId,
         private readonly ?Id $receiverAccountId,
-        private readonly string $senderAccountNumber,
-        private readonly string $receiverAccountNumber,
+        private readonly AccountNumber $senderAccountNumber,
+        private readonly AccountNumber $receiverAccountNumber,
         private readonly Money $amount,
         private readonly Money $fee,
         private readonly Currency $currency,
@@ -42,12 +43,12 @@ class Transaction
         return $this->receiverAccountId;
     }
 
-    public function getSenderAccountNumber(): string
+    public function getSenderAccountNumber(): AccountNumber
     {
         return $this->senderAccountNumber;
     }
 
-    public function getReceiverAccountNumber(): string
+    public function getReceiverAccountNumber(): AccountNumber
     {
         return $this->receiverAccountNumber;
     }

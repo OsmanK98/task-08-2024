@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\BankAccount\Application\CreateDebitTransaction;
 
 use App\BankAccount\Domain\Repository\BankAccountRepositoryInterface;
+use App\BankAccount\Domain\ValueObject\AccountNumber;
 use App\BankAccount\Domain\ValueObject\Currency;
 use App\BankAccount\Domain\ValueObject\Money;
 use App\Shared\Application\IdGeneratorInterface;
@@ -21,7 +22,8 @@ class CreateDebitTransactionCommandHandler implements CommandHandlerInterface
 
     public function __invoke(CreateDebitTransactionCommand $command): void
     {
-        $receiverAccount = $this->bankAccountRepository->getAccountByAccountNumber($command->receiverAccountNumber);
+        $receiverAccountNumber = new AccountNumber($command->receiverAccountNumber);
+        $receiverAccount = $this->bankAccountRepository->getAccountByAccountNumber($receiverAccountNumber);
         $senderAccount = $this->bankAccountRepository->getAccountByAccountId(new Id($command->senderAccountId));
         if (null === $senderAccount) {
             throw new \InvalidArgumentException('Sender account not found');
@@ -34,7 +36,7 @@ class CreateDebitTransactionCommandHandler implements CommandHandlerInterface
             new Money($command->amount),
             new Currency($command->currency),
             $receiverAccount, // Can be null if receiver account is in different bank
-            $command->receiverAccountNumber,
+            $receiverAccountNumber,
             $command->transactionDate,
             $this->bankAccountRepository->getNumberOfDayTransactionsForAccount(
                 $senderAccount->getId(),

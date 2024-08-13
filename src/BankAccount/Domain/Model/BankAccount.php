@@ -7,6 +7,7 @@ namespace App\BankAccount\Domain\Model;
 use App\BankAccount\Domain\Exception\BalanceCannotBeNegative;
 use App\BankAccount\Domain\Exception\NumberOfDailyTransactionExceeded;
 use App\BankAccount\Domain\Exception\TransactionCurrencyIsNotTheSameAsAccountCurrency;
+use App\BankAccount\Domain\ValueObject\AccountNumber;
 use App\BankAccount\Domain\ValueObject\Currency;
 use App\BankAccount\Domain\ValueObject\Money;
 use App\BankAccount\Domain\ValueObject\TransactionType;
@@ -18,7 +19,7 @@ class BankAccount
 
     private Id $ownerId; // User ID from different module
 
-    private string $accountNumber;
+    private AccountNumber $accountNumber;
 
     private Money $balance;
 
@@ -32,7 +33,7 @@ class BankAccount
         Money $amount,
         Currency $currency,
         ?BankAccount $receiverAccount,
-        string $receiverAccountNumber,
+        AccountNumber $receiverAccountNumber,
         string $transactionDate,
         int $numberOfTransaction
     ): void {
@@ -70,7 +71,7 @@ class BankAccount
         Money $amount,
         Currency $currency,
         ?BankAccount $senderAccount,
-        string $senderAccountNumber,
+        AccountNumber $senderAccountNumber,
         string $transactionDate,
     ): void {
         if (!$this->currency->isEqual($currency)) {
@@ -98,7 +99,7 @@ class BankAccount
 
     public function __construct(
         Id $id,
-        string $accountNumber,
+        AccountNumber $accountNumber,
         Id $ownerId,
         Money $balance,
         Currency $currency,
@@ -122,7 +123,7 @@ class BankAccount
         return $this->ownerId;
     }
 
-    public function getAccountNumber(): string
+    public function getAccountNumber(): AccountNumber
     {
         return $this->accountNumber;
     }

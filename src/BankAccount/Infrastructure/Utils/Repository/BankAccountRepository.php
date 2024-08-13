@@ -6,6 +6,7 @@ namespace App\BankAccount\Infrastructure\Utils\Repository;
 
 use App\BankAccount\Domain\Model\BankAccount;
 use App\BankAccount\Domain\Repository\BankAccountRepositoryInterface;
+use App\BankAccount\Domain\ValueObject\AccountNumber;
 use App\BankAccount\Infrastructure\Doctrine\Repository\DoctrineBankAccountRepository;
 use App\BankAccount\Infrastructure\Utils\Transformer\BankAccountTransformer;
 use App\Shared\Domain\Id;
@@ -18,7 +19,7 @@ class BankAccountRepository implements BankAccountRepositoryInterface
     ) {
     }
 
-    public function getAccountByAccountNumber(string $accountNumber): ?BankAccount
+    public function getAccountByAccountNumber(AccountNumber $accountNumber): ?BankAccount
     {
         $bankAccountEntity = $this->repository->getAccountByAccountNumber($accountNumber);
         if (null === $bankAccountEntity) {

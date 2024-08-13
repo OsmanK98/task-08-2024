@@ -6,6 +6,7 @@ namespace App\BankAccount\Infrastructure\Utils\Transformer;
 
 use App\BankAccount\Domain\Model\BankAccount;
 use App\BankAccount\Domain\Model\Transaction;
+use App\BankAccount\Domain\ValueObject\AccountNumber;
 use App\BankAccount\Domain\ValueObject\Currency;
 use App\BankAccount\Domain\ValueObject\Money;
 use App\BankAccount\Domain\ValueObject\TransactionType;
@@ -27,7 +28,7 @@ class BankAccountTransformer
     {
         return new BankAccount(
             new Id($bankAccountEntity->getId()),
-            $bankAccountEntity->getAccountNumber(),
+            new AccountNumber($bankAccountEntity->getAccountNumber()),
             new Id($bankAccountEntity->getOwnerId()),
             new Money($bankAccountEntity->getBalance()),
             new Currency($bankAccountEntity->getCurrency()),
@@ -46,8 +47,8 @@ class BankAccountTransformer
                 $transaction->getReceiverAccountNumber()
                     ? new Id($transaction->getReceiverAccountNumber())
                     : null,
-                $transaction->getSenderAccountNumber(),
-                $transaction->getReceiverAccountNumber(),
+                new AccountNumber($transaction->getSenderAccountNumber()),
+                new AccountNumber($transaction->getReceiverAccountNumber()),
                 new Money($transaction->getAmount()),
                 new Money($transaction->getFee()),
                 new Currency($transaction->getCurrency()),
@@ -63,7 +64,7 @@ class BankAccountTransformer
 
         if ($bankAccountEntity) {
             $bankAccountEntity->edit(
-                $bankAccount->getAccountNumber(),
+                $bankAccount->getAccountNumber()->toString(),
                 $bankAccount->getOwnerId()->toString(),
                 $bankAccount->getBalance()->toInt(),
                 $bankAccount->getCurrency()->toString(),
@@ -72,7 +73,7 @@ class BankAccountTransformer
         } else {
             return new BankAccountEntity(
                 $bankAccount->getId()->toString(),
-                $bankAccount->getAccountNumber(),
+                $bankAccount->getAccountNumber()->toString(),
                 $bankAccount->getOwnerId()->toString(),
                 $bankAccount->getBalance()->toInt(),
                 $bankAccount->getCurrency()->toString(),
@@ -104,8 +105,8 @@ class BankAccountTransformer
                         $transactionDomain->getId()->toString(),
                         $senderAccount,
                         $receiverAccount,
-                        $transactionDomain->getSenderAccountNumber(),
-                        $transactionDomain->getReceiverAccountNumber(),
+                        $transactionDomain->getSenderAccountNumber()->toString(),
+                        $transactionDomain->getReceiverAccountNumber()->toString(),
                         $transactionDomain->getAmount()->toInt(),
                         $transactionDomain->getFee()->toInt(),
                         $transactionDomain->getCurrency()->toString(),

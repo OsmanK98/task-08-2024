@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\BankAccount\Infrastructure\Doctrine\Repository;
 
+use App\BankAccount\Domain\ValueObject\AccountNumber;
 use App\BankAccount\Infrastructure\Doctrine\Entity\BankAccount;
 use App\BankAccount\Infrastructure\Doctrine\Entity\Transaction;
 use App\Shared\Domain\Id;
@@ -16,7 +17,7 @@ class DoctrineBankAccountRepository
     ) {
     }
 
-    public function getAccountByAccountNumber(string $accountNumber): ?BankAccount
+    public function getAccountByAccountNumber(AccountNumber $accountNumber): ?BankAccount
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
@@ -24,7 +25,7 @@ class DoctrineBankAccountRepository
             ->select('ba')
             ->from(BankAccount::class, 'ba')
             ->andWhere('ba.accountNumber = :accountNumber')
-            ->setParameter('accountNumber', $accountNumber)
+            ->setParameter('accountNumber', $accountNumber->toString())
             ->getQuery()
             ->getOneOrNullResult();
     }
